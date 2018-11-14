@@ -1,2 +1,2 @@
-# dtss
-A Distributed Task Scheduler System like Cron.
+# dts
+A Distributed Task Scheduler like Cron.
