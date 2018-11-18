@@ -1,10 +1,13 @@
 package crond
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gamelife1314/crontab/common"
 )
 
 type ApiServer struct {
@@ -53,32 +56,188 @@ func InitApiServer() (err error) {
 	return
 }
 
+func handleError(response http.ResponseWriter) {
+	if err := recover(); err != nil {
+		errStr := fmt.Errorf("%v", err)
+		if bytes, err := common.BuildResponse(-1, errStr.Error(), nil); err == nil {
+			response.Write(bytes)
+		} else {
+			common.Logger.Fatal("A fatal error occur.")
+		}
+
+	}
+}
+
 // handleJobSave is used to handle requests of creating or updating.
 func handleJobSave(response http.ResponseWriter, request *http.Request) {
+	defer handleError(response)
+	var (
+		err                        error
+		jobName, command, cronExpr string
+		job, prevJob               *common.Job
+		bytes                      []byte
+	)
 
+	if err = request.ParseForm(); err != nil {
+		panic(err.Error())
+	}
+
+	jobName = request.PostForm.Get("jobName")
+	command = request.PostForm.Get("command")
+	cronExpr = request.PostForm.Get("cronExpr")
+
+	job = &common.Job{
+		Name:     jobName,
+		Command:  command,
+		CronExpr: cronExpr,
+	}
+
+	if prevJob, err = G_JobManager.SaveJob(job); err != nil {
+		panic(err.Error())
+	}
+
+	if bytes, err = common.BuildResponse(0, "success", prevJob); err == nil {
+		response.Write(bytes)
+	}
+	return
 }
 
 // handleJobDelete is used to handle requests of delete
 func handleJobDelete(response http.ResponseWriter, request *http.Request) {
+	defer handleError(response)
+	var (
+		err     error
+		name    string
+		prevJob *common.Job
+		bytes   []byte
+	)
 
+	if err = request.ParseForm(); err != nil {
+		panic(err.Error())
+	}
+
+	name = request.PostForm.Get("name")
+
+	if prevJob, err = G_JobManager.DeleteJob(name); err != nil {
+		panic(err.Error())
+	}
+
+	if bytes, err = common.BuildResponse(0, "success", prevJob); err == nil {
+		response.Write(bytes)
+	}
+	return
 }
 
 // handleJobList is used to list all jobs.
 func handleJobList(response http.ResponseWriter, request *http.Request) {
+	defer handleError(response)
+	var (
+		jobList []*common.Job
+		bytes   []byte
+		err     error
+	)
 
+	if jobList, err = G_JobManager.ListJobs(); err != nil {
+		panic(err.Error())
+	}
+
+	if bytes, err = common.BuildResponse(0, "success", jobList); err == nil {
+		response.Write(bytes)
+	}
+
+	return
 }
 
 // handleJobKill is used to kill someone job.
 func handleJobKill(response http.ResponseWriter, request *http.Request) {
+	defer handleError(response)
+	var (
+		err   error
+		name  string
+		bytes []byte
+	)
 
+	if err = request.ParseForm(); err != nil {
+		panic(err.Error())
+	}
+
+	name = request.PostForm.Get("name")
+
+	if err = G_JobManager.KillJob(name); err != nil {
+		panic(err.Error())
+	}
+
+	if bytes, err = common.BuildResponse(0, "success", nil); err == nil {
+		response.Write(bytes)
+	}
+
+	return
 }
 
 // handleJobLog is used to query task logs.
 func handleJobLog(response http.ResponseWriter, request *http.Request) {
+	defer handleError(response)
+	var (
+		err                   error
+		name                  string
+		limit, skip           int
+		limitParam, skipParam string
+		logArr                []*common.JobLog
+		bytes                 []byte
+	)
 
+	if err = request.ParseForm(); err != nil {
+		panic(err.Error())
+	}
+
+	name = request.PostForm.Get("name")
+	if name == "" {
+		panic("name is required!")
+	}
+	skipParam = request.PostForm.Get("skip")
+	if skipParam == "" {
+		skipParam = "0"
+	}
+	limitParam = request.PostForm.Get("limit")
+	if limitParam == "" {
+		limitParam = "0"
+	}
+
+	if skip, err = strconv.Atoi(skipParam); err != nil {
+		panic(err.Error())
+	}
+
+	if limit, err = strconv.Atoi(limitParam); err != nil {
+		panic(err.Error())
+	}
+
+	if logArr, err = G_LogManager.ListLog(name, int64(skip), int64(limit)); err != nil {
+		panic(err.Error())
+	}
+
+	if bytes, err = common.BuildResponse(0, "success", logArr); err == nil {
+		response.Write(bytes)
+	}
+
+	return
 }
 
 // handleWorkerList is used to list worker nodes.
 func handleWorkerList(response http.ResponseWriter, request *http.Request) {
+	defer handleError(response)
+	var (
+		workers []string
+		err     error
+		bytes   []byte
+	)
 
+	if workers, err = G_WorkManager.ListWorkers(); err != nil {
+		panic(err.Error())
+	}
+
+	if bytes, err = common.BuildResponse(0, "success", workers); err == nil {
+		response.Write(bytes)
+	}
+
+	return
 }

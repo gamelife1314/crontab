@@ -1,3 +1,12 @@
 http:
   address: 0.0.0.0
   port: 8080
+  readTimeout: 2000
+  writeTimeout: 2000
+etcd:
+  endPoints: ["127.0.0.1:2379"]
+  dialTimeout: 5000 # 单位: ms
+mongo:
+  url: mongodb://127.0.0.1:27017
+  database: cron
+  collection: cron_logs
