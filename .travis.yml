@@ -22,7 +22,8 @@ before_install:
   - go get go.etcd.io/etcd/clientv3
   - go get go.etcd.io/etcd/mvcc
   - go get gopkg.in/yaml.v2
-  - go get golang.org/x/sys
+  - go get golang.org/x/sys/cpu
+  - go get golang.org/x/sys/unix
 
 script:
   - go test -v -cpu=1,2  ./common
