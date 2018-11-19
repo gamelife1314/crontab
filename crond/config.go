@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"os"
 )
 
 // HttpConfig set http service configuration
@@ -42,6 +43,9 @@ func LoadConfig(filename string) (err error) {
 		content []byte
 		config  ServiceConfig
 	)
+	if filename == "" {
+		filename = os.Getenv("CROND_CONFIG_FILE")
+	}
 	if content, err = ioutil.ReadFile(filename); err != nil {
 		return
 	}

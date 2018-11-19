@@ -8,7 +8,7 @@ import (
 func TestBuildResponse(t *testing.T) {
 	var (
 		resp []byte
-		err error
+		err  error
 		data map[string]interface{}
 	)
 
@@ -22,4 +22,9 @@ func TestBuildResponse(t *testing.T) {
 	if len(resp) == 0 {
 		t.Fatal("Errors happened when common.BuildResponse build response.")
 	}
+}
+
+func TestExtractWorkerIp(t *testing.T) {
+	key := "/cron/worker/192.168.0.1"
+	assert.Equal(t, "192.168.0.1", ExtractWorkerIp(key))
 }

@@ -29,12 +29,12 @@ func InitApiServer() (err error) {
 
 	// config routes
 	mux = http.NewServeMux()
-	mux.HandleFunc("/job/save", handleJobSave)
-	mux.HandleFunc("/job/delete", handleJobDelete)
-	mux.HandleFunc("/job/list", handleJobList)
-	mux.HandleFunc("/job/kill", handleJobKill)
-	mux.HandleFunc("/job/log", handleJobLog)
-	mux.HandleFunc("/worker/list", handleWorkerList)
+	mux.HandleFunc("/job/save", HandleJobSave)
+	mux.HandleFunc("/job/delete", HandleJobDelete)
+	mux.HandleFunc("/job/list", HandleJobList)
+	mux.HandleFunc("/job/kill", HandleJobKill)
+	mux.HandleFunc("/job/log", HandleJobLog)
+	mux.HandleFunc("/worker/list", HandleWorkerList)
 
 	address = Config.Http.Address + ":" + strconv.Itoa(Config.Http.Port)
 	if listener, err = net.Listen("tcp", address); err != nil {
@@ -69,7 +69,7 @@ func handleError(response http.ResponseWriter) {
 }
 
 // handleJobSave is used to handle requests of creating or updating.
-func handleJobSave(response http.ResponseWriter, request *http.Request) {
+func HandleJobSave(response http.ResponseWriter, request *http.Request) {
 	defer handleError(response)
 	var (
 		err                        error
@@ -103,7 +103,7 @@ func handleJobSave(response http.ResponseWriter, request *http.Request) {
 }
 
 // handleJobDelete is used to handle requests of delete
-func handleJobDelete(response http.ResponseWriter, request *http.Request) {
+func HandleJobDelete(response http.ResponseWriter, request *http.Request) {
 	defer handleError(response)
 	var (
 		err     error
@@ -116,7 +116,7 @@ func handleJobDelete(response http.ResponseWriter, request *http.Request) {
 		panic(err.Error())
 	}
 
-	name = request.PostForm.Get("name")
+	name = request.PostForm.Get("jobName")
 
 	if prevJob, err = G_JobManager.DeleteJob(name); err != nil {
 		panic(err.Error())
@@ -129,7 +129,7 @@ func handleJobDelete(response http.ResponseWriter, request *http.Request) {
 }
 
 // handleJobList is used to list all jobs.
-func handleJobList(response http.ResponseWriter, request *http.Request) {
+func HandleJobList(response http.ResponseWriter, request *http.Request) {
 	defer handleError(response)
 	var (
 		jobList []*common.Job
@@ -149,7 +149,7 @@ func handleJobList(response http.ResponseWriter, request *http.Request) {
 }
 
 // handleJobKill is used to kill someone job.
-func handleJobKill(response http.ResponseWriter, request *http.Request) {
+func HandleJobKill(response http.ResponseWriter, request *http.Request) {
 	defer handleError(response)
 	var (
 		err   error
@@ -161,7 +161,7 @@ func handleJobKill(response http.ResponseWriter, request *http.Request) {
 		panic(err.Error())
 	}
 
-	name = request.PostForm.Get("name")
+	name = request.PostForm.Get("jobName")
 
 	if err = G_JobManager.KillJob(name); err != nil {
 		panic(err.Error())
@@ -175,7 +175,7 @@ func handleJobKill(response http.ResponseWriter, request *http.Request) {
 }
 
 // handleJobLog is used to query task logs.
-func handleJobLog(response http.ResponseWriter, request *http.Request) {
+func HandleJobLog(response http.ResponseWriter, request *http.Request) {
 	defer handleError(response)
 	var (
 		err                   error
@@ -189,10 +189,9 @@ func handleJobLog(response http.ResponseWriter, request *http.Request) {
 	if err = request.ParseForm(); err != nil {
 		panic(err.Error())
 	}
-
-	name = request.PostForm.Get("name")
+	name = request.PostForm.Get("jobName")
 	if name == "" {
-		panic("name is required!")
+		panic("jobName is required!")
 	}
 	skipParam = request.PostForm.Get("skip")
 	if skipParam == "" {
@@ -200,7 +199,7 @@ func handleJobLog(response http.ResponseWriter, request *http.Request) {
 	}
 	limitParam = request.PostForm.Get("limit")
 	if limitParam == "" {
-		limitParam = "0"
+		limitParam = "10"
 	}
 
 	if skip, err = strconv.Atoi(skipParam); err != nil {
@@ -223,7 +222,7 @@ func handleJobLog(response http.ResponseWriter, request *http.Request) {
 }
 
 // handleWorkerList is used to list worker nodes.
-func handleWorkerList(response http.ResponseWriter, request *http.Request) {
+func HandleWorkerList(response http.ResponseWriter, request *http.Request) {
 	defer handleError(response)
 	var (
 		workers []string

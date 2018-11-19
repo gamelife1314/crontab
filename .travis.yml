@@ -19,6 +19,8 @@ before_install:
   - go get go.etcd.io/etcd/mvcc
   - go get gopkg.in/yaml.v2
   - go get golang.org/x/sys
+  - export CROND_CONFIG_FILE="${GOPATH}/src/github.com/gamelife1314/crontab/.travis.crond.yml"
 
 script:
-  - go test github.com/gamelife1314/crontab/common
+  - go test -v github.com/gamelife1314/crontab/common
+  - go test -v github.com/gamelife1314/crontab/crond

@@ -1,13 +1,23 @@
 package common
 
+import "encoding/json"
+
 // Job represent a executed task
 type Job struct {
 	// cron job name
-	Name     string
+	Name string `json:"name"`
 	// command
-	Command  string
+	Command string `json:"command"`
 	// cron expr
-	CronExpr string
+	CronExpr string `json:"cron_expr"`
+}
+
+func (j *Job) String() string {
+	if data, err := json.Marshal(j); err != nil {
+		return ""
+	} else {
+		return string(data)
+	}
 }
 
 // JobLog represent log that will be stored in mongo
@@ -36,4 +46,12 @@ type Response struct {
 	ErrorCode int         `json:"error_code"`
 	ErrorMsg  string      `json:"error_msg"`
 	Data      interface{} `json:"data"`
+}
+
+func (r *Response) String() string {
+	if data, err := json.Marshal(r); err != nil {
+		return ""
+	} else {
+		return string(data)
+	}
 }
