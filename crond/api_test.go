@@ -12,16 +12,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestInitApiServer(t *testing.T) {
-	var (
-		err error
-	)
-	err = LoadConfig("")
-	assert.Equal(t, err, nil)
-	err = InitApiServer()
-	assert.Equal(t, err, nil)
-}
-
 func TestHandleJobSave(t *testing.T) {
 	initJobManager(t)
 	values := url.Values{
