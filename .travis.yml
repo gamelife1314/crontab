@@ -3,6 +3,9 @@ language: go
 services:
   - mongodb
 
+git:
+  depth: 5
+
 go:
   - "1.10.x"
 
