@@ -33,7 +33,10 @@ func initArgs() {
 func init() {
 	initEnv()
 	initArgs()
-	common.SetLogFile(logFile)
+	if err := common.SetLogFile(logFile); err != nil {
+		fmt.Println(err)
+		os.Exit(-1)
+	}
 	if err := crond.LoadConfig(configFile); err != nil {
 		fmt.Println(err)
 		os.Exit(-1)
