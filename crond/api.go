@@ -68,6 +68,12 @@ func handleError(response http.ResponseWriter) {
 	}
 }
 
+func validateEmptyParam(field, value string) {
+	if value == "" {
+		panic(field + " is required!")
+	}
+}
+
 // handleJobSave is used to handle requests of creating or updating.
 func HandleJobSave(response http.ResponseWriter, request *http.Request) {
 	defer handleError(response)
@@ -83,8 +89,11 @@ func HandleJobSave(response http.ResponseWriter, request *http.Request) {
 	}
 
 	jobName = request.PostForm.Get("jobName")
+	validateEmptyParam("jobName", jobName)
 	command = request.PostForm.Get("command")
+	validateEmptyParam("command", command)
 	cronExpr = request.PostForm.Get("cronExpr")
+	validateEmptyParam("cronExpr", cronExpr)
 
 	job = &common.Job{
 		Name:     jobName,
@@ -107,7 +116,7 @@ func HandleJobDelete(response http.ResponseWriter, request *http.Request) {
 	defer handleError(response)
 	var (
 		err     error
-		name    string
+		jobName string
 		prevJob *common.Job
 		bytes   []byte
 	)
@@ -116,9 +125,10 @@ func HandleJobDelete(response http.ResponseWriter, request *http.Request) {
 		panic(err.Error())
 	}
 
-	name = request.PostForm.Get("jobName")
+	jobName = request.PostForm.Get("jobName")
+	validateEmptyParam("jobName", jobName)
 
-	if prevJob, err = G_JobManager.DeleteJob(name); err != nil {
+	if prevJob, err = G_JobManager.DeleteJob(jobName); err != nil {
 		panic(err.Error())
 	}
 
@@ -152,18 +162,19 @@ func HandleJobList(response http.ResponseWriter, request *http.Request) {
 func HandleJobKill(response http.ResponseWriter, request *http.Request) {
 	defer handleError(response)
 	var (
-		err   error
-		name  string
-		bytes []byte
+		err     error
+		jobName string
+		bytes   []byte
 	)
 
 	if err = request.ParseForm(); err != nil {
 		panic(err.Error())
 	}
 
-	name = request.PostForm.Get("jobName")
+	jobName = request.PostForm.Get("jobName")
+	validateEmptyParam("jobName", jobName)
 
-	if err = G_JobManager.KillJob(name); err != nil {
+	if err = G_JobManager.KillJob(jobName); err != nil {
 		panic(err.Error())
 	}
 
@@ -179,7 +190,7 @@ func HandleJobLog(response http.ResponseWriter, request *http.Request) {
 	defer handleError(response)
 	var (
 		err                   error
-		name                  string
+		jobName               string
 		limit, skip           int
 		limitParam, skipParam string
 		logArr                []*common.JobLog
@@ -189,10 +200,8 @@ func HandleJobLog(response http.ResponseWriter, request *http.Request) {
 	if err = request.ParseForm(); err != nil {
 		panic(err.Error())
 	}
-	name = request.PostForm.Get("jobName")
-	if name == "" {
-		panic("jobName is required!")
-	}
+	jobName = request.PostForm.Get("jobName")
+	validateEmptyParam("jobName", jobName)
 	skipParam = request.PostForm.Get("skip")
 	if skipParam == "" {
 		skipParam = "0"
@@ -210,7 +219,7 @@ func HandleJobLog(response http.ResponseWriter, request *http.Request) {
 		panic(err.Error())
 	}
 
-	if logArr, err = G_LogManager.ListLog(name, int64(skip), int64(limit)); err != nil {
+	if logArr, err = G_LogManager.ListLog(jobName, int64(skip), int64(limit)); err != nil {
 		panic(err.Error())
 	}
 
