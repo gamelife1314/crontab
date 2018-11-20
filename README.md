@@ -1,7 +1,7 @@
 ### Crond
 
 <p align="center">
-    <img alt="crontab icon" src="./crontab.png">
+    <img alt="crontab icon" src="./crontab.png" width="256px">
 </p>
 
 <p align="center">
