@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="crontab icon" src="./crontab.png" width="256px">
+    <img alt="crontab icon" src="./crontab.jpeg" width="256px">
 </p>
 
 <p align="center">
