@@ -17,7 +17,6 @@ before_install:
   - tar xzf etcd-v3.3.10-linux-amd64.tar.gz
   - nohup ./etcd-v3.3.10-linux-amd64/etcd &
   - go get github.com/mongodb/mongo-go-driver/mongo
-  - go get github.com/mongodb/mongo-go-driver/options
   - go get github.com/sirupsen/logrus
   - go get go.etcd.io/etcd/clientv3
   - go get go.etcd.io/etcd/mvcc
