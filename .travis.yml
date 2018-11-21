@@ -22,5 +22,5 @@ install:
 - godep restore
 
 script:
-  - go test -v -cpu=1,2  ./common
-  - go test -v -cpu=1,2 ./crond
+  - go test -v -cpu=1,2  github.com/gamelife1314/crontab/common
+  - go test -v -cpu=1,2  github.com/gamelife1314/crontab/crond
