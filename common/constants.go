@@ -3,5 +3,13 @@ package common
 const (
 	CronJobDir     = "/cron/job/"
 	CronKillJobDir = "/cron/killed/job/"
-	CronWorkerDir  = "/cron/worker/"
+	CronWorkerDir  = "/cron/workers/"
+	CronLockDir    = "/cron/lock/"
+)
+
+const (
+	_ = iota
+	JobSaveEvent
+	JobDeleteEvent
+	JobKillEvent
 )

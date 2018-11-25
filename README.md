@@ -11,8 +11,27 @@
 
 > A Distributed Task Scheduler like Cron.
 
-Now, It's under developing.
+** Now, It's under developing. **
 
 ### Dependencies
-1. etcd
-2. mogno
+1. [etcd](https://coreos.com/etcd/)
+2. [mongo](https://github.com/mongodb/mongo)
+
+### Install
+
+If you have already installed go in your local machine, you can install `crond` and `cron` by `go install`：
+
+for cron:
+
+    go build -o client github.com/gamelife1314/crontab/cron/main
+
+for crond:
+
+    go build -o master github.com/gamelife1314/crontab/crond/main
+
+Or, you can download prebuilt binary files.
+
+### Start
+
+for crond: `./master -config  crond.yaml`
+for client: `./client -config  cron.yaml`
