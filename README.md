@@ -35,4 +35,5 @@ Or, you can download [prebuilt binary](https://github.com/gamelife1314/crontab/r
 ### Start
 
 for crond: `./master -config  crond.yaml`
+
 for client: `./client -config  cron.yaml`
