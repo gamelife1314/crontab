@@ -12,7 +12,7 @@
 
 > A Distributed Task Scheduler like Cron.
 
-** Now, It's under developing. **
+**Now, It's under developing.**
 
 ### Dependencies
 1. [etcd](https://coreos.com/etcd/)
